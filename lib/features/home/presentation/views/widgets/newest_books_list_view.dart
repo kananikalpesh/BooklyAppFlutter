@@ -13,6 +13,27 @@ class NewestBooksListView extends StatelessWidget {
     return BlocBuilder<NewestBooksCubit, NewestBooksState>(
       builder: (context, state) {
         if (state is NewestBooksSuccess) {
+          return SliverList(
+            delegate: SliverChildBuilderDelegate(
+                  (context, index) => Padding(
+                padding: const EdgeInsets.symmetric(vertical: 10.0),
+                child: BookListViewItem(
+                  bookModel: state.books[index],
+                ),
+              ),
+              childCount: state.books.length,
+            ),
+          );
+        } else if (state is NewestBooksFailure) {
+          return SliverToBoxAdapter(
+            child: CustomErrorWidget(errMessage: state.errMessage),
+          );
+        } else {
+          return const SliverToBoxAdapter(
+            child: CustomLoadingIndicator(),
+          );
+        }
+        /*if (state is NewestBooksSuccess) {
           return ListView.builder(
             physics: const NeverScrollableScrollPhysics(),
             padding: EdgeInsets.zero,
@@ -29,7 +50,7 @@ class NewestBooksListView extends StatelessWidget {
           return CustomErrorWidget(errMessage: state.errMessage);
         } else{
           return const CustomLoadingIndicator();
-        }
+        }*/
       },
     );
   }
